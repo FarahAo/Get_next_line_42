@@ -90,6 +90,7 @@ char	*get_next_line(int fd)
 	char	*extracted_saved;
 	char	*line;
 
+	line = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 
@@ -101,13 +102,6 @@ char	*get_next_line(int fd)
 		return (NULL);
 	if (ft_strchr(saved, '\n'))
 		line = extract_line(saved);
-	if (!line)
-	{
-		free(saved);
-		saved = NULL;
-		return (NULL);
-	}
-
 	extracted_saved = extract_saved(saved);
 	if (!extracted_saved)
 	{
