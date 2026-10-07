@@ -6,7 +6,7 @@
 /*   By: fabo-ome <fabo-ome@learner.42.tech>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 13:38:38 by fabo-ome          #+#    #+#             */
-/*   Updated: 2026/10/07 17:51:12 by fabo-ome         ###   ########.fr       */
+/*   Updated: 2026/10/07 18:22:25 by fabo-ome         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,5 +107,7 @@ char	*get_next_line(int fd)
 		return (NULL);
 	}
 	saved = extract_saved(saved);
+	if (!saved)
+		return (NULL);
 	return (line);
 }

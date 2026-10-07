@@ -6,7 +6,7 @@
 /*   By: fabo-ome <fabo-ome@learner.42.tech>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 13:34:04 by fabo-ome          #+#    #+#             */
-/*   Updated: 2026/10/05 16:16:20 by fabo-ome         ###   ########.fr       */
+/*   Updated: 2026/10/07 18:17:42 by fabo-ome         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ size_t	ft_strlen(const char *str)
 	size_t	i;
 
 	if (!str)
-		return (NULL);
+		return (0);
 	i = 0;
 	while (str[i])
 		i++;
@@ -41,7 +41,7 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char const *s2)
 {
 	char	*p;
 	size_t	i;
