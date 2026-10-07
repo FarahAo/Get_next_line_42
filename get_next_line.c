@@ -6,7 +6,7 @@
 /*   By: fabo-ome <fabo-ome@learner.42.tech>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 13:38:38 by fabo-ome          #+#    #+#             */
-/*   Updated: 2026/10/05 19:55:52 by fabo-ome         ###   ########.fr       */
+/*   Updated: 2026/10/07 17:51:12 by fabo-ome         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static char	*read_and_add(int fd, char *saved)
 	while (!(ft_strchr(saved, '\n')))
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read ==  -1)
+		if (bytes_read == -1)
 		{
 			free(buffer);
 			free(saved);
@@ -43,21 +43,21 @@ static char	*read_and_add(int fd, char *saved)
 
 static char	*extract_line(char *saved)
 {
-	char	*line;
+	char		*line;
 	size_t		line_length;
 
 	if (!saved)
 		return (NULL);
 	line_length = 0;
-	while (saved[line_length] != '\n' && saved[line_length])
+	while (saved[line_length] && saved[line_length] != '\n')
 		line_length++;
 	line_length += (saved[line_length] == '\n');
 	line = malloc(line_length + 1);
-       if (!line)
-       {
-	       free(saved);
-	       return (NULL);
-       }
+	if (!line)
+	{
+		free(saved);
+		return (NULL);
+	}
 	ft_memcpy(line, saved, line_length);
 	line[line_length] = '\0';
 	return (line);
@@ -88,4 +88,24 @@ static char	*extract_saved(char *saved)
 	extracted_saved[lefto_length] = '\0';
 	free(saved);
 	return (extracted_saved);
+}
+
+char	*get_next_line(int fd)
+{
+	static char		*saved;
+	char			*line;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	saved = read_and_add(fd, saved);
+	if (!saved)
+		return (NULL);
+	line = extract_line(saved);
+	if (!line)
+	{
+		saved = NULL;
+		return (NULL);
+	}
+	saved = extract_saved(saved);
+	return (line);
 }
