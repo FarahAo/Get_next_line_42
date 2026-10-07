@@ -12,34 +12,16 @@
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *s)
+size_t	ft_strlen(const char *str)
 {
 	size_t	i;
 
+	if (!str)
+		return (NULL);
 	i = 0;
-	while(s[i])
+	while (str[i])
 		i++;
 	return (i);
-}
-
-char	*ft_strdup(const char *s)
-{
-	char	*copy;
-	size_t	length_s;
-	size_t	i;
-
-	i = 0;
-	length_s = ft_strlen(s);
-	copy = malloc(length_s + 1);
-	if (!copy)
-		return (NULL);
-	while (s[i])
-	{
-		copy[i] = s[i];
-		i++;
-	}
-	copy[i] = '\0';
-	return (copy);
 }
 
 void	*ft_memcpy(void *dest, const void *src, size_t n)
@@ -58,35 +40,41 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	}
 	return (dest);
 }
-char	*ft_strjoin(char const *saved, char const *buffer)
+
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	char	*new_saved;
-	size_t		length;
-	size_t		j;
-	size_t		i;
-	
-	if (!saved)
-	{
-		new_saved = ft_strdup(buffer);
-		return (new_saved);
-	}
-	length = ft_strlen(saved) + ft_strlen(buffer);
-	new_saved = malloc(length + 1);
-	if (!new_saved)
-		return (NULL);
-	ft_memcpy(new_saved, saved, ft_strlen(saved));
-	j = ft_strlen(saved);
+	char	*p;
+	size_t	i;
+	size_t	j;
+
 	i = 0;
-	while (buffer[i])
-		new_saved[j + i] = buffer[i++];
-	new_saved[j + i] = '\0';
-	return (new_saved);
+	j = 0;
+	p = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	if (!p)
+	{
+		free(s1);
+		return (NULL);
+	}
+	while (s1 && s1[i])
+	{
+		p[j] = s1[i];
+		i++;
+		j++;
+	}
+	i = 0;
+	while (s2 && s2[i])
+		p[j++] = s2[i++];
+	p[j] = '\0';
+	free(s1);
+	return (p);
 }
 
 char	*ft_strchr(const char *str, int c)
 {
 	size_t	i;
 
+	if (!str)
+		return (NULL);
 	i = 0;
 	while (str[i])
 	{
@@ -98,5 +86,3 @@ char	*ft_strchr(const char *str, int c)
 		return ((char *)&str[i]);
 	return (NULL);
 }
-
-

@@ -12,38 +12,33 @@
 
 #include "get_next_line.h"
 
-static char	*save_to_buffer(int fd)
+static char	*read_and_add(int fd, char *saved)
 {
 	char	*buffer;
 	ssize_t	bytes_read;
 
 	buffer = malloc(BUFFER_SIZE + 1);
 	if (!buffer)
-		return (NULL);
-	bytes_read = read(fd, buffer, BUFFER_SIZE);
-	if (bytes_read == -1)
-	{
-		free(buffer);
-		return (NULL);
-	}
-	buffer[bytes_read] = '\0';
-	return (buffer);
-}
-
-static char	*add_to_saved(char *saved, char *buffer)
-{
-	char	*new_saved;
-
-	new_saved = ft_strjoin(saved, buffer);
-	if (!new_saved)
 	{
 		free(saved);
-		free(buffer);
 		return (NULL);
 	}
-	free(saved);
+	while (!(ft_strchr(saved, '\n')))
+	{
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read ==  -1)
+		{
+			free(buffer);
+			free(saved);
+			return (NULL);
+		}
+		if (bytes_read == 0)
+			break ;
+		buffer[bytes_read] = '\0';
+		saved = ft_strjoin(saved, buffer);
+	}
 	free(buffer);
-	return (new_saved);
+	return (saved);
 }
 
 static char	*extract_line(char *saved)
@@ -59,7 +54,10 @@ static char	*extract_line(char *saved)
 	line_length += (saved[line_length] == '\n');
 	line = malloc(line_length + 1);
        if (!line)
+       {
+	       free(saved);
 	       return (NULL);
+       }
 	ft_memcpy(line, saved, line_length);
 	line[line_length] = '\0';
 	return (line);
@@ -69,47 +67,25 @@ static char	*extract_saved(char *saved)
 {
 	size_t	lefto_length;
 	char	*extracted_saved;
+	char	*new_saved;
 
-	lefto_length = 1;
-	saved = ft_strchr(saved, '\n');
-	while (saved[lefto_length])
+	lefto_length = 0;
+	new_saved = ft_strchr(saved, '\n');
+	if (!new_saved || !new_saved[lefto_length + 1])
+	{
+		free(saved);
+		return (NULL);
+	}
+	while (new_saved[lefto_length + 1])
 		lefto_length++;
-	extracted_saved = malloc(lefto_length);
-	if (!extracted_saved)
-		return (NULL);
-	ft_memcpy(extracted_saved, saved + 1, lefto_length);
-	extracted_saved[lefto_length] = '\0';
-	return (extracted_saved);
-}
-
-
-char	*get_next_line(int fd)
-{
-	char	*buffer;
-	static	char	*saved;
-	char	*extracted_saved;
-	char	*line;
-
-	line = NULL;
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-
-	buffer = save_to_buffer(fd);
-	if (!buffer)
-		return (NULL);
-	saved = add_to_saved(saved, buffer);
-	if (!saved)
-		return (NULL);
-	if (ft_strchr(saved, '\n'))
-		line = extract_line(saved);
-	extracted_saved = extract_saved(saved);
+	extracted_saved = malloc(lefto_length + 1);
 	if (!extracted_saved)
 	{
 		free(saved);
-		saved = NULL;
 		return (NULL);
 	}
+	ft_memcpy(extracted_saved, new_saved + 1, lefto_length);
+	extracted_saved[lefto_length] = '\0';
 	free(saved);
-	saved = extracted_saved;
-	return (line);
+	return (extracted_saved);
 }
